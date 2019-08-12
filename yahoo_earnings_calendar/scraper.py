@@ -39,6 +39,22 @@ class YahooEarningsCalendar(object):
             '\n') if row.startswith('root.App.main = ')][0][:-1]
         page_data_string = page_data_string.split('root.App.main = ', 1)[1]
         return json.loads(page_data_string)
+    
+    def get_all_earnings(self, symbol):
+        """Gets all earning dates of a symbol
+        Args:
+            symbol: A ticker symbol
+        Returns:
+            A list of dictionaries containing details for all available earnings
+        Raises:
+            Exception: When symbol is invalid or earnings date is not available
+        """
+        url = f'{BASE_URL}?symbol={symbol}'
+        try:
+            page_data_dict = self._get_data_dict(url)
+            return page_data_dict['context']['dispatcher']['stores']['ScreenerResultsStore']['results']['rows']
+        except:
+            raise Exception('Invalid Symbol')
 
     def get_next_earnings_date(self, symbol):
         """Gets the next earnings date of symbol
